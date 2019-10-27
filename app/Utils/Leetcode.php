@@ -3,7 +3,10 @@
 
 namespace App\Utils;
 
+use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 
 class Leetcode
 {
@@ -45,9 +48,8 @@ class Leetcode
      */
     public function getQuestions()
     {
-        $questions =  $this->normalRequest(self::METHOD_GET, self::URL_QUESTIONS);
+        $questions = $this->getQuestion();
         $translations = $this->getTranslations();
-        $questions = $questions['stat_status_pairs'];
         return array_map(function ($question) use ($translations) {
             $stat = $question['stat'];
             return [
@@ -55,9 +57,25 @@ class Leetcode
                 'title' => $stat['question__title'],
                 'slug' => $stat['question__title_slug'],
                 'difficulty' => $question['difficulty']['level'],
-                'translation' => $translations[$stat['question_id']]
+                'translation' => Arr::get($translations, $stat['question_id'], ''),
+                'front_id' => $stat['frontend_question_id']
             ];
         }, $questions);
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getQuestion()
+    {
+        $key = __METHOD__;
+        $questions = Cache::get($key);
+        if(!$questions){
+            $questions =  $this->normalRequest(self::METHOD_GET, self::URL_QUESTIONS);
+            $questions = $questions['stat_status_pairs'];
+            Cache::put($key, $questions, 86400);
+        }
+        return $questions;
     }
 
     /**
@@ -75,14 +93,67 @@ class Leetcode
              __typename
            }
          }';
-        $translations = $this->graphQLRequest($operationName, $query);
-        return array_column($translations['data']['translations'], 'title', 'question_id');
+        $key = __METHOD__;
+        $translations = Cache::get($key);
+        if(!$translations){
+            $translations = $this->graphQLRequest($operationName, $query);
+            $translations = array_column($translations['data']['translations'], 'title', 'questionId');
+            Cache::put($key, $translations, 86400);
+        }
+        return $translations;
     }
 
+    /**
+     * 获取题目标签
+     * @return mixed|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function getTags()
     {
-        $data = $this->normalRequest(self::METHOD_GET, self::URL_TAGS);
-        return $data['topics'];
+        $key = __METHOD__;
+        $tags = Cache::get($key);
+        if(!$tags){
+            $tags = $this->normalRequest(self::METHOD_GET, self::URL_TAGS);
+            $tags =$tags['topics'];
+            Cache::put($key, $tags, 86400);
+        }
+        return $tags;
+    }
+
+    /**
+     * 获取单个用户的提交记录
+     * @param $userSlug
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getUserSubmissions($userSlug)
+    {
+        $operationName = 'recentSubmissions';
+        $query = 'query recentSubmissions($userSlug: String!) {
+            recentSubmissions(userSlug: $userSlug) {
+                status
+                lang
+                question {
+                    questionFrontendId
+                    title
+                    translatedTitle
+                    titleSlug
+                    __typename
+                }
+                submitTime
+                __typename
+            }
+        }';
+        $variables = ['userSlug' => $userSlug];
+        $submissions = $this->graphQLRequest($operationName, $query, $variables);
+        return array_map(function ($submission){
+            return [
+                'front_id' => $submission['question']['questionFrontendId'],
+                'language' => $submission['lang'],
+                'result' => $submission['status'],
+                'time' => Carbon::createFromTimestamp($submission['submitTime'])
+            ];
+        }, $submissions['data']['recentSubmissions']);
     }
 
     /**

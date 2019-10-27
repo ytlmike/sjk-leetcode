@@ -3,6 +3,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
 class UserSubmit extends BaseModel
@@ -23,9 +25,47 @@ class UserSubmit extends BaseModel
         self::FIELD_RESULT
     ];
 
-    const LANGUAGE_MAP = [];
+    const LANGUAGE_MAP = [
+        'A_19'  => 'PHP',
+        'A_8'   => 'Bash',
+        'A_11'  => 'Python3',
+        'A_6'   => 'JavaScript',
+        'A_3'   => 'MySQL',
+        'A_1'   => 'Java',
+    ];
 
-    const RESULT_MAP = [];
+    const RESULT_CORRECT    = 'A_10';
+    const RESULT_WRONG      = 'A_11';
+    const RESULT_TIMEOUT    = 'A_14';
+    const RESULT_EXCEPTION  = 'A_15';
+
+    const RESULT_MAP = [
+        self::RESULT_CORRECT    => '通过',
+        self::RESULT_WRONG      => '解答错误',
+        self::RESULT_TIMEOUT    => '超出时间限制',
+        self::RESULT_EXCEPTION  => '运行出错'
+    ];
+
+    public static function getByUserIdAndSubmitTime($userId, Carbon $time)
+    {
+        return self::where(self::FIELD_USER_ID, $userId)->where(self::FIELD_SUBMIT_AT, $time->toDateTimeString())->first();
+    }
+
+    /**
+     * 查询一个用户指定时间段内的正确提交
+     * @param $userId
+     * @param Carbon $from
+     * @param Carbon $to
+     * @return UserSubmit[]|\Illuminate\Database\Eloquent\Builder[]|Collection
+     */
+    public static function getCorrectSubmissionInDuration($userId, Carbon $from, Carbon $to)
+    {
+        return self::with('question')
+            ->where(self::FIELD_USER_ID, $userId)
+            ->where(self::FIELD_RESULT, self::RESULT_CORRECT)
+            ->whereBetween(self::FIELD_SUBMIT_AT, [$from->toDateTimeString(), $to->toDateTimeString()])
+            ->get();
+    }
 
     public function getUserId()
     {
@@ -84,6 +124,22 @@ class UserSubmit extends BaseModel
     {
         $map = array_flip(self::RESULT_MAP);
         $this->attributes[self::FIELD_RESULT] = Arr::get($map, $result, $result);
+    }
+
+    /**
+     * @return SjkUser
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @return LeetcodeQuestion
+     */
+    public function getQuestion()
+    {
+        return $this->question;
     }
 
     public function user()

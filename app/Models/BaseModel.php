@@ -35,4 +35,14 @@ class BaseModel extends Model
     {
         return self::where(self::FIELD_ID, $ids)->get();
     }
+
+    public static function saveAll($data)
+    {
+        $data = array_map(function ($item) {
+            $item[self::FIELD_CREATED_AT] = date('Y-m-d H:i:s');
+            $item[self::FIELD_UPDATED_AT] = date('Y-m-d H:i:s');
+            return $item;
+        }, $data);
+        return self::insert($data);
+    }
 }

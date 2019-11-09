@@ -48,17 +48,22 @@ class CalculateUserPoints extends Command
         $users->each(function ($user) use ($start, $end) {
             /** @var SjkUser $user */
             $correctSubmissions = UserSubmit::getCorrectSubmissionInDuration($user->getId(), $start, $end);
+            $questionIds = [];
             $questionCont = [
                 LeetcodeQuestion::DIFFICULTY_LEVEL_EASY => 0,
                 LeetcodeQuestion::DIFFICULTY_LEVEL_MID  => 0,
                 LeetcodeQuestion::DIFFICULTY_LEVEL_HARD => 0
             ];
             $point = 0;
-            $correctSubmissions->each(function ($submission) use (&$questionCont, &$point) {
+            $correctSubmissions->each(function ($submission) use (&$questionCont, &$point, &$questionIds) {
                 /** @var UserSubmit $submission */
-                $difficultyLevel = $submission->getQuestion()->getDifficultyLevel();
-                $questionCont[$difficultyLevel]++;
-                $point += Leetcode::POINT_MAP[$difficultyLevel];
+
+                if(!in_array($submission->getQuestionId(), $questionIds)){
+                    $difficultyLevel = $submission->getQuestion()->getDifficultyLevel();
+                    $questionCont[$difficultyLevel]++;
+                    $point += Leetcode::POINT_MAP[$difficultyLevel];
+                    $questionIds[] = $submission->getQuestionId();
+                }
             });
             print_r("{$user->getName()}，积分：{$point}，简单题{$questionCont[LeetcodeQuestion::DIFFICULTY_LEVEL_EASY]}道，中等题{$questionCont[LeetcodeQuestion::DIFFICULTY_LEVEL_MID]}道，困难题{$questionCont[LeetcodeQuestion::DIFFICULTY_LEVEL_HARD]}道 \n");
         });

@@ -4,6 +4,8 @@ namespace App\Console;
 
 use App\Console\Commands\InitLeetcodeData;
 use App\Console\Commands\SyncUserQuestion;
+use App\Console\Commands\Xiuxiu\ClassContent;
+use App\Console\Commands\Xiuxiu\ClassStudtyStage;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +18,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         InitLeetcodeData::class,
-        SyncUserQuestion::class
+        SyncUserQuestion::class,
+        ClassContent::class,
+        ClassStudtyStage::class
     ];
 
     /**

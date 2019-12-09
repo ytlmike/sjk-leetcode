@@ -8,6 +8,10 @@ use App\Models\BaseModel;
 use App\Models\LeetcodeQuestion;
 use App\Models\QuestionHasTag;
 use App\Models\QuestionTag;
+use App\Models\SjkUser;
+use App\Models\UserSubmit;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +32,90 @@ class Leetcode
         $this->questionModel = new LeetcodeQuestion();
         $this->tagModel = new QuestionTag();
         $this->leetcode = new \App\Utils\Leetcode();
+    }
+
+    /**
+     * 同步用户提交记录
+     * @param $users
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function syncUserSubmit($users)
+    {
+        if(!is_array($users) && !($users instanceof Collection)){
+            $users = [$users];
+        }
+        $insert = [];
+        $leetcode = new \App\Utils\Leetcode();
+        foreach ($users as $user) {
+            try{
+                $submissions = $leetcode->getUserSubmissions($user->getSlug());
+            }catch (\Exception $exception){
+                $this->saveQuestions();
+                $this->saveTags();
+                $this->syncUserSubmit($users);
+            }
+            foreach ($submissions as $key => $submission) {
+                if(UserSubmit::getByUserIdAndSubmitTime($user->getId(), $submission['time'])){
+                    unset($submissions[$key]);
+                }
+            }
+            $frontIds = array_column($submissions, 'front_id');
+            $questionIds = LeetcodeQuestion::frontIds2QuestionIds($frontIds);
+            foreach ($submissions as $submission) {
+                /** @var Carbon $time */
+                $time = $submission['time'];
+                $insert[] = [
+                    UserSubmit::FIELD_USER_ID => $user->getId(),
+                    UserSubmit::FIELD_QUESTION_ID => $questionIds[$submission['front_id']],
+                    UserSubmit::FIELD_SUBMIT_AT => $time->toDateTimeString(),
+                    UserSubmit::FIELD_LANGUAGE => $submission['language'],
+                    UserSubmit::FIELD_RESULT => $submission['result']
+                ];
+            }
+        }
+        UserSubmit::saveAll($insert);
+    }
+
+    /**
+     * 获取用户分数
+     * @param $users
+     * @param Carbon $start
+     * @param Carbon $end
+     * @return array
+     */
+    public function calcUserPoint($users, Carbon $start, Carbon $end)
+    {
+        if(!is_array($users) && !($users instanceof Collection)){
+            $users = [$users];
+        }
+        $result = [];
+        /** @var SjkUser $user */
+        foreach ($users as $user) {
+            $correctSubmissions = UserSubmit::getCorrectSubmissionInDuration($user->getId(), $start, $end);
+            $questionIds = [];
+            $questionCount = [
+                LeetcodeQuestion::DIFFICULTY_LEVEL_EASY => 0,
+                LeetcodeQuestion::DIFFICULTY_LEVEL_MID  => 0,
+                LeetcodeQuestion::DIFFICULTY_LEVEL_HARD => 0
+            ];
+            $point = 0;
+            $correctSubmissions->each(function ($submission) use (&$questionCount, &$point, &$questionIds) {
+                /** @var UserSubmit $submission */
+                if(!in_array($submission->getQuestionId(), $questionIds)){
+                    $difficultyLevel = $submission->getQuestion()->getDifficultyLevel();
+                    $questionCount[$difficultyLevel]++;
+                    $point += Leetcode::POINT_MAP[$difficultyLevel];
+                    $questionIds[] = $submission->getQuestionId();
+                }
+            });
+            $result[] = [
+                'user' => $user,
+                'point' => $point,
+                'counts' => $questionCount,
+                'submissions' => $correctSubmissions
+            ];
+        }
+        return $result;
     }
 
     public function saveQuestions()

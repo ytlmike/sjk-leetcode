@@ -2,11 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\LeetcodeQuestion;
 use App\Models\SjkUser;
-use App\Models\UserSubmit;
-use App\Utils\Leetcode;
-use Carbon\Carbon;
+use App\Services\Leetcode;
 use Illuminate\Console\Command;
 
 class SyncUserQuestion extends Command
@@ -41,29 +38,6 @@ class SyncUserQuestion extends Command
     public function handle()
     {
         $users = SjkUser::all();
-        $leetcode = new Leetcode();
-        $insert = [];
-        foreach ($users as $user) {
-            $submissions = $leetcode->getUserSubmissions($user->getSlug());
-            foreach ($submissions as $key => $submission) {
-                if(UserSubmit::getByUserIdAndSubmitTime($user->getId(), $submission['time'])){
-                    unset($submissions[$key]);
-                }
-            }
-            $frontIds = array_column($submissions, 'front_id');
-            $questionIds = LeetcodeQuestion::frontIds2QuestionIds($frontIds);
-            foreach ($submissions as $submission) {
-                /** @var Carbon $time */
-                $time = $submission['time'];
-                $insert[] = [
-                    UserSubmit::FIELD_USER_ID => $user->getId(),
-                    UserSubmit::FIELD_QUESTION_ID => $questionIds[$submission['front_id']],
-                    UserSubmit::FIELD_SUBMIT_AT => $time->toDateTimeString(),
-                    UserSubmit::FIELD_LANGUAGE => $submission['language'],
-                    UserSubmit::FIELD_RESULT => $submission['result']
-                ];
-            }
-        }
-        UserSubmit::saveAll($insert);
+        (new Leetcode())->syncUserSubmit($users);
     }
 }

@@ -60,11 +60,13 @@ class UserSubmit extends BaseModel
      */
     public static function getCorrectSubmissionInDuration($userId, Carbon $from, Carbon $to)
     {
-        return self::with('question')
+        $temp = self::with('question')
             ->where(self::FIELD_USER_ID, $userId)
-            ->where(self::FIELD_RESULT, self::RESULT_CORRECT)
-            ->whereBetween(self::FIELD_SUBMIT_AT, [$from->toDateTimeString(), $to->toDateTimeString()])
-            ->get();
+            ->where(self::FIELD_RESULT, self::RESULT_CORRECT);
+        if($from && $to){
+            $temp = $temp ->whereBetween(self::FIELD_SUBMIT_AT, [$from->toDateTimeString(), $to->toDateTimeString()]);
+        }
+        return $temp->get();
     }
 
     public function getUserId()

@@ -97,6 +97,7 @@
         },
         methods: {
             submit() {
+                let self = this;
                 let valid = false;
                 this.$refs['form'].validate((val) => {
                     valid = val;
@@ -109,7 +110,7 @@
                         if (response.code === 200) {
                             window.location.href = '/';
                         } else {
-                            this.$message(response.msg);
+                            self.$message(response.msg);
                         }
                     })
                     .catch(function (error) {

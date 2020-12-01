@@ -200,13 +200,13 @@
                 if (!valid) {
                     return;
                 }
-
+                let self = this;
                 axios.post('/api/register', this.registerData)
                     .then(function (response) {
                         if (response.code === 200) {
                             window.location.href = '/login';
                         } else {
-                            this.$message(response.message);
+                            self.$message(response.message);
                         }
                     })
                     .catch(function (error) {

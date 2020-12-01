@@ -11,7 +11,7 @@ use App\Models\QuestionTag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Leetcode
+class LeetcodeService
 {
     protected $questionModel;
     protected $tagModel;
@@ -65,8 +65,11 @@ class Leetcode
         }
     }
 
-    public function updateData(BaseModel $model, array $updateData,  array $map, string $identifyField = BaseModel::FIELD_ID)
+    public function updateData(BaseModel $model, array $updateData,  array $map, string $identifyField = null)
     {
+        if (!$identifyField) {
+            $identifyField = $model->getKeyName();
+        }
         $identify = array_column($updateData, $map[$identifyField]);
         $exists = $model->whereIn($identifyField, $identify)->get($identifyField)->toArray();
         $exists = array_column($exists, $identifyField);

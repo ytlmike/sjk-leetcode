@@ -23,23 +23,10 @@ class Leetcode
     const BODY_FORMAT_FORM_DATA = 'form_params';
     const DEFAULT_BODY_FORMAT = self::BODY_FORMAT_JSON;
 
-    protected $client;
-    protected $csrfToken;
-    protected $sessionId;
+    const KEY_TOKEN = 'leetcode_token';
 
-    /**
-     * 模拟登录
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function login()
-    {
-        $this->normalRequest(self::METHOD_POST, self::URL_LOGIN, [
-            'csrfmiddlewaretoken' => $this->csrfToken,
-            'login' => '15650790070',
-            'password' => 'aa921103',
-            'next' => '/'
-        ], self::BODY_FORMAT_FORM_DATA);
-    }
+    protected $client;
+    protected $sessionId;
 
     /**
      * 获取题目列表
@@ -76,6 +63,28 @@ class Leetcode
             Cache::put($key, $questions, 86400);
         }
         return $questions;
+    }
+
+    public function getUser($username)
+    {
+        $operationName = 'userPublicProfile';
+        $query = 'query userPublicProfile($userSlug: String!) {
+          userProfilePublicProfile(userSlug: $userSlug) {
+            username
+            haveFollowed
+            siteRanking
+            profile {
+              userSlug
+              realName
+              userAvatar
+              __typename
+            }
+            __typename
+          }
+        }';
+
+        $data = $this->graphQLRequest($operationName, $query, ['userSlug' => $username]);
+        return $data['data']['userProfilePublicProfile']['profile'];
     }
 
     /**
@@ -131,6 +140,7 @@ class Leetcode
         $operationName = 'recentSubmissions';
         $query = 'query recentSubmissions($userSlug: String!) {
             recentSubmissions(userSlug: $userSlug) {
+                id,
                 status
                 lang
                 question {
@@ -148,22 +158,20 @@ class Leetcode
         $submissions = $this->graphQLRequest($operationName, $query, $variables);
         return array_map(function ($submission){
             return [
+                'submission_id' => $submission['id'],
                 'front_id' => $submission['question']['questionFrontendId'],
                 'language' => $submission['lang'],
                 'result' => $submission['status'],
-                'time' => Carbon::createFromTimestamp($submission['submitTime'])
+                'time' => date('Y-m-d H:i:s', $submission['submitTime'])
             ];
         }, $submissions['data']['recentSubmissions']);
     }
 
-    /**
-     * 生成Token
-     * @return $this
-     */
-    public function initToken()
+    protected function getToken()
     {
-        $this->csrfToken = md5(round(20000)) . md5(round(20000));
-        return $this;
+        return Cache::remember(self::KEY_TOKEN, 3600, function () {
+            return md5(round(20000)) . md5(round(20000));
+        });
     }
 
     /**
@@ -198,12 +206,9 @@ class Leetcode
         if (!$this->client) {
             $this->client = new Client();
         }
-        if (!$this->csrfToken) {
-            $this->initToken();
-        }
         $request = [
             'headers' => [
-                'x-csrftoken' => $this->csrfToken,
+                'x-csrftoken' => $this->getToken(),
                 'referer' => 'https://leetcode-cn.com/',
             ],
             $bodyFormat => $params

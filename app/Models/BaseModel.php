@@ -9,40 +9,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
-    const FIELD_ID = 'id';
     const FIELD_CREATED_AT = 'created_at';
     const FIELD_UPDATED_AT = 'updated_at';
 
-    public function getId()
-    {
-        return $this->attributes['id'];
-    }
-
-    /**
-     * @param $id
-     * @return static
-     */
-    public function getById($id)
-    {
-        return self::where(static::FIELD_ID, $id)->first();
-    }
-
-    /**
-     * @param $ids
-     * @return Collection
-     */
-    public static function getListById($ids)
-    {
-        return self::where(self::FIELD_ID, $ids)->get();
-    }
-
     public static function saveAll($data)
     {
+        if (empty($data)) {
+            return true;
+        }
         $data = array_map(function ($item) {
-            $item[self::FIELD_CREATED_AT] = date('Y-m-d H:i:s');
-            $item[self::FIELD_UPDATED_AT] = date('Y-m-d H:i:s');
+            $item[static::FIELD_CREATED_AT] = date('Y-m-d H:i:s');
+            $item[static::FIELD_UPDATED_AT] = date('Y-m-d H:i:s');
             return $item;
         }, $data);
-        return self::insert($data);
+        return static::insert($data);
     }
 }

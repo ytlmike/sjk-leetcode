@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,11 +12,22 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('login', 'AuthController@login');
+Route::post('register', 'AuthController@register');
+Route::get('leetcode/user', 'LeetcodeController@user');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::group(['middleware' => ['auth:api']], function () {
 
-Route::any('/ping', function(){
-    echo 'pong';
+    Route::get('me', 'AuthController@me');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('avatar', 'AuthController@uploadAvatar');
+    Route::post('name', 'AuthController@editUserName');
+
+    Route::group(['prefix' => 'leetcode'], function () {
+        Route::get('submissions', 'LeetcodeController@submissions');
+        Route::post('sync', 'LeetcodeController@syncSubmissions');
+    });
+
+    Route::get('week/rank/normal', 'RankController@normal'); //正常排名
+    Route::get('week/rank/abnormal', 'RankController@abnormal'); //本周小黑屋
 });

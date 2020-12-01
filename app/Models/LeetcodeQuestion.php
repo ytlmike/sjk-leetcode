@@ -54,7 +54,7 @@ class LeetcodeQuestion extends BaseModel
         $map = [];
         $questions->each(function($question) use (&$map) {
             /** @var LeetcodeQuestion $question */
-            $map[$question->getFrontId()] = $question->getId();
+            $map[$question->getFrontId()] = $question->getKey();
         });
         return $map;
     }

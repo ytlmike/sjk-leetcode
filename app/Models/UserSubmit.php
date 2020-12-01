@@ -10,13 +10,17 @@ use Illuminate\Support\Arr;
 class UserSubmit extends BaseModel
 {
     const TABLE_NAME = 'user_submit';
+    const FIELD_SUBMISSION_ID = 'submission_id';
     const FIELD_USER_ID = 'user_id';
     const FIELD_QUESTION_ID = 'question_id';
     const FIELD_SUBMIT_AT = 'submit_at';
     const FIELD_LANGUAGE = 'language';
     const FIELD_RESULT = 'result';
 
-    protected $table = self::TABLE_NAME;
+    const SEARCH_FIELDS = [
+        self::FIELD_USER_ID
+    ];
+
     protected $fillable = [
         self::FIELD_USER_ID,
         self::FIELD_QUESTION_ID,
@@ -32,6 +36,7 @@ class UserSubmit extends BaseModel
         'A_6'   => 'JavaScript',
         'A_3'   => 'MySQL',
         'A_1'   => 'Java',
+        'A_4'   => 'C',
     ];
 
     const RESULT_CORRECT    = 'A_10';
@@ -46,6 +51,8 @@ class UserSubmit extends BaseModel
         self::RESULT_EXCEPTION  => '运行出错'
     ];
 
+    protected $table = self::TABLE_NAME;
+
     public static function getByUserIdAndSubmitTime($userId, Carbon $time)
     {
         return self::where(self::FIELD_USER_ID, $userId)->where(self::FIELD_SUBMIT_AT, $time->toDateTimeString())->first();
@@ -54,16 +61,16 @@ class UserSubmit extends BaseModel
     /**
      * 查询一个用户指定时间段内的正确提交
      * @param $userId
-     * @param Carbon $from
-     * @param Carbon $to
+     * @param $from
+     * @param $to
      * @return UserSubmit[]|\Illuminate\Database\Eloquent\Builder[]|Collection
      */
-    public static function getCorrectSubmissionInDuration($userId, Carbon $from, Carbon $to)
+    public static function getCorrectSubmissionInDuration($userId, $from, $to)
     {
         return self::with('question')
             ->where(self::FIELD_USER_ID, $userId)
             ->where(self::FIELD_RESULT, self::RESULT_CORRECT)
-            ->whereBetween(self::FIELD_SUBMIT_AT, [$from->toDateTimeString(), $to->toDateTimeString()])
+            ->whereBetween(self::FIELD_SUBMIT_AT, [$from, $to])
             ->get();
     }
 
@@ -127,7 +134,7 @@ class UserSubmit extends BaseModel
     }
 
     /**
-     * @return SjkUser
+     * @return User
      */
     public function getUser()
     {
@@ -144,7 +151,7 @@ class UserSubmit extends BaseModel
 
     public function user()
     {
-        return $this->belongsTo(SjkUser::class, self::FIELD_USER_ID);
+        return $this->belongsTo(User::class, self::FIELD_USER_ID);
     }
 
     public function question()

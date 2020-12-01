@@ -44,6 +44,10 @@
             text-align: right;
             margin-right: 30px;
         }
+
+        ranking-card .el-link--inner {
+            font-size: 12px
+        }
     </style>
 </head>
 <body>
@@ -75,11 +79,11 @@
                     <div v-for="(item, index) in normalList" :key="index" class="ranking-item" :class="{my: item.slug === me.leetcode_slug}">
                         <el-row>
                             <el-col :span="6">
-                                <img :src="item.avatar" style="max-width: 40px; max-height: 40px; border-radius: 20px"
-                                     alt="">
-                                <p style="font-size: 12px;">
-                                    <el-link type="primary" :href="'https://leetcode-cn.com/u/' + item.slug" target="_blank">@{{ item.name }}</el-link>
-                                </p>
+                                <el-link type="primary" :href="'https://leetcode-cn.com/u/' + item.slug" target="_blank" :underline="false">
+                                    <img :src="item.avatar" style="max-width: 40px; max-height: 40px; border-radius: 20px"
+                                         alt="">
+                                </el-link>
+                                <p style="font-size: 12px;">@{{ item.name }}</p>
                             </el-col>
                             <el-col :span="18">
                                 <el-progress
@@ -102,8 +106,9 @@
                     <div v-for="(item, index) in abnormalList" :key="index" class="ranking-item">
                         <el-row>
                             <el-col :span="6">
-                                <img :src="item.avatar" style="max-width: 40px; max-height: 40px; border-radius: 20px"
-                                     alt="">
+                                <el-link type="primary" :href="'https://leetcode-cn.com/u/' + item.slug" target="_blank" :underline="false">
+                                    <img :src="item.avatar" style="max-width: 40px; max-height: 40px; border-radius: 20px" alt="">
+                                </el-link>
                                 <p style="font-size: 12px;">@{{ item.name }}</p>
                             </el-col>
                             <el-col :span="18">

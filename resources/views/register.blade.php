@@ -108,12 +108,14 @@
                         </el-upload>
                     </div>
                 </el-form-item>
-
             </el-form>
             <div style="text-align: center">
                 <div style="margin-top: 15px">
                     <el-button type="primary" @click="fillProfile" v-show="step===1">继续</el-button>
                     <el-button type="primary" @click="submit" v-show="step===2">完成</el-button>
+                </div>
+                <div style="margin-top: 15px">
+                    <el-link type="primary" href="/login">绑定过了？去登录</el-link>
                 </div>
             </div>
 

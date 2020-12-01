@@ -68,6 +68,7 @@
 <body>
 <div id="app">
     <div class="head">
+        <el-button @click="goRanking" type="text" style="font-size: 32px; color: #8c939d"><i class="el-icon-s-home"></i></el-button>
         <el-tooltip content="做题去" placement="bottom" effect="light">
             <el-button @click="goLeetcode" type="text" style="font-size: 32px; color: #8c939d"><i class="el-icon-s-promotion"></i></el-button>
         </el-tooltip>
@@ -96,7 +97,9 @@
                         <el-button @click="editName=true" type="text" size="small" style="font-size: 16px"><i class="el-icon-edit-outline"></i></el-button>
                     </div>
                     <span style="color:#909399; font-size: 14px">@{{ me.leetcode_slug }}</span>
-                    <el-button @click="logout" type="text" size="small" style="font-size: 16px">退出登录</el-button>
+                    <div style="margin-top: 15px">
+                        <el-button @click="logout" type="text" size="small" style="font-size: 14px">退出登录</el-button>
+                    </div>
                 </el-col>
             </el-row>
         </el-card>
@@ -147,6 +150,9 @@
         methods: {
             goLeetcode() {
                 window.open('https://leetcode-cn.com/problemset/all/');
+            },
+            goRanking() {
+                window.location.href = '/ranking';
             },
             buildQuestionLink(questionName) {
                 return 'https://leetcode-cn.com/problems/' + questionName.replace(/\s/g, '-');

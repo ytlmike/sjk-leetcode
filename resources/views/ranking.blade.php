@@ -14,18 +14,13 @@
         #app {
             width: 100vw;
             height: 100vh;
-            position: relative
         }
 
         .ranking-container {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translateY(-50%) translateX(-50%);
-            max-width: 100vw;
-            max-height: 100vh;
-            width: 1000px;
+            width: 900px;
             color: #606266;
+            margin: 0 auto;
+            position: relative;
         }
 
         .ranking-card {
@@ -62,6 +57,17 @@
         </el-tooltip>
     </div>
     <div class="ranking-container">
+        <div style="margin-left: 15px">
+            <el-tooltip effect="light">
+                <div slot="content" style="font-size: 14px; color: #606266; line-height: 32px">
+                    <b style="font-size: 18px">规则说明</b>
+                    <p>每周做题结算，累计5分即为完成，未完成的同学掉入小黑屋，需在接下来的一周达成10分才能回到小白屋。</p>
+                    <p>每题分值按难度区分：简单难度每题1分，中等2分，困难4分。</p>
+                    <p>算法路远，贵在坚持。</p>
+                </div>
+                <i class="el-icon-question" style="color: #a1a8ab; font-size: 24px"></i>
+            </el-tooltip>
+        </div>
         <el-row>
             <el-col :sm="12" :xs="24">
                 <div class="ranking-card">
@@ -71,7 +77,9 @@
                             <el-col :span="6">
                                 <img :src="item.avatar" style="max-width: 40px; max-height: 40px; border-radius: 20px"
                                      alt="">
-                                <p style="font-size: 12px;">@{{ item.name }}</p>
+                                <p style="font-size: 12px;">
+                                    <el-link type="primary" :href="'https://leetcode-cn.com/u/' + item.slug" target="_blank">@{{ item.name }}</el-link>
+                                </p>
                             </el-col>
                             <el-col :span="18">
                                 <el-progress
@@ -137,7 +145,7 @@
                 window.open('https://leetcode-cn.com/problemset/all/');
             },
             format(item) {
-                return _ => item.count + '道题目';
+                return _ => item.point + '分';
             },
             getStatus(item, target = 5) {
                 if (item.count <= target * 0.4) {

@@ -71,7 +71,7 @@
                     <el-button type="primary" @click="submit">登录</el-button>
                 </div>
                 <div style="margin-top: 15px">
-                    <el-button type="text">第一次来？先绑定leetcode吧</el-button>
+                    <el-button @click="goRegister" type="text">第一次来？先绑定leetcode吧</el-button>
                 </div>
             </div>
 
@@ -96,6 +96,9 @@
             }
         },
         methods: {
+            goRegister() {
+                window.location.href = '/register';
+            },
             submit() {
                 let valid = false;
                 this.$refs['form'].validate((val) => {

@@ -84,7 +84,7 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
-                <el-form-item label="密码：" prop="password">
+                <el-form-item label="本站密码：" prop="password">
                     <el-input show-password v-model="registerData.password"></el-input>
                 </el-form-item>
                 <el-form-item label="确认密码：" prop="repeat_password">

@@ -83,7 +83,7 @@
                     <div class="ranking-title">小白屋</div>
                     <div v-for="(item, index) in normalList" :key="index" class="ranking-item" :class="{my: item.slug === me.leetcode_slug}">
                         <el-row>
-                            <el-col :span="6">
+                            <el-col :span="6" style="text-align: center">
                                 <el-link type="primary" :href="'https://leetcode-cn.com/u/' + item.slug" target="_blank" :underline="false">
                                     <img :src="item.avatar" style="max-width: 40px; max-height: 40px; border-radius: 20px"
                                          alt="">

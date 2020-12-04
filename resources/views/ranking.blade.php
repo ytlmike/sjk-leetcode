@@ -172,13 +172,13 @@
                 return _ => item.point + '分';
             },
             getStatus(item, target = 5) {
-                if (item.count <= target * 0.4) {
+                if (item.point <= target * 0.4) {
                     return 'exception'
                 }
-                if (item.count <= target * 0.8) {
+                if (item.point <= target * 0.8) {
                     return 'warning'
                 }
-                if (item.count <= target * 1) {
+                if (item.point <= target * 1) {
                     return 'success'
                 }
                 return 'primary'

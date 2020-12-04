@@ -62,14 +62,19 @@
     </div>
     <div class="ranking-container">
         <div style="margin-left: 15px">
-            <el-tooltip effect="light">
-                <div slot="content" style="font-size: 14px; color: #606266; line-height: 32px">
-                    <b style="font-size: 18px">规则说明</b>
-                    <p>每周做题结算，累计5分即为完成，未完成的同学掉入小黑屋，需在接下来的一周达成10分才能回到小白屋。</p>
-                    <p>每题分值按难度区分：简单难度每题1分，中等2分，困难4分。</p>
-                    <p>算法路远，贵在坚持。</p>
-                </div>
-                <i class="el-icon-question" style="color: #a1a8ab; font-size: 24px"></i>
+            <div style="margin-right: 15px; display: inline-block">
+                <el-tooltip effect="light">
+                    <div slot="content" style="font-size: 14px; color: #606266; line-height: 32px">
+                        <b style="font-size: 18px">规则说明</b>
+                        <p>每周做题结算，累计5分即为完成，未完成的同学掉入小黑屋，需在接下来的一周达成10分才能回到小白屋。</p>
+                        <p>每题分值按难度区分：简单难度每题1分，中等2分，困难4分。</p>
+                        <p>算法路远，贵在坚持。</p>
+                    </div>
+                    <i class="el-icon-question" style="color: #a1a8ab; font-size: 24px"></i>
+                </el-tooltip>
+            </div>
+            <el-tooltip effect="light" content="同步">
+                <el-button @click="syncSubmissions" type="text" size="small" style="font-size: 24px"><i class="el-icon-refresh"></i></el-button>
             </el-tooltip>
         </div>
         <el-row>
@@ -143,6 +148,20 @@
             }
         },
         methods: {
+            syncSubmissions() {
+                let self = this;
+                axios.post('/api/leetcode/sync', {})
+                    .then(function (response) {
+                        if (response.code === 200) {
+                            self.getList(1);
+                        } else {
+                            self.$message(response.msg);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
             goMyPage() {
                 window.location.href = '/my';
             },

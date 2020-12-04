@@ -37,7 +37,7 @@ class RankUserCollection extends ResourceCollection
         });
 
         usort($list, function ($a, $b) {
-            return $a['count'] < $b['count'];
+            return $a['point'] < $b['point'];
         });
 
         return $list;

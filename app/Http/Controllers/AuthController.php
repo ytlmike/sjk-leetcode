@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\UserSubmitService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -24,6 +25,8 @@ class AuthController extends Controller
         $user->setAvatar($input['avatar']);
         $user->save();
 
+        (new UserSubmitService())->syncUserRecentSubmissions($user);
+
         return $this->login($request);
     }
 
@@ -41,7 +44,7 @@ class AuthController extends Controller
         }
 
         $response = $this->success();
-        return $response->withCookie('token', $token, 86400);
+        return $response->withCookie('token', $token, 60*24*30);
     }
 
     public function resetPassword(Request $request)

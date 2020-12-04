@@ -51,7 +51,7 @@
                         </el-col>
                         <el-col :span="2">
                             <div style="padding-left: 10px">
-                                <el-tooltip effect="light">
+                                <el-tooltip ref="tips" effect="light">
                                     <div slot="content">
                                         <p>不知道你的用户名？去leetcode个人主页看一下</p>
                                         <img src="/img/name.png" alt="" style="max-width: 280px">

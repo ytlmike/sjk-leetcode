@@ -14,17 +14,24 @@
         #app {
             width: 100vw;
             height: 100vh;
+            background-repeat: no-repeat;
+            background-size: cover;
+            -webkit-background-size: cover;
+            -o-background-size: cover;
+            background-position: center 0;
         }
 
         .ranking-container {
             width: 900px;
-            color: #606266;
             margin: 0 auto;
             position: relative;
+            /*background-color: rgba(255,255,255,0.3);*/
+            /*border-radius: 20px;*/
+            /*padding: 25px;*/
         }
 
         .ranking-card {
-            padding: 15px
+            padding: 15px;
         }
 
         .ranking-title {
@@ -48,19 +55,27 @@
         ranking-card .el-link--inner {
             font-size: 12px
         }
+
+        .zero .el-progress-bar__innerText {
+            color: #606266;
+        }
+
+        .el-progress-bar__outer {
+            border: solid 1px #d0d3d7;
+        }
     </style>
 </head>
 <body>
-<div id="app">
+<div id="app" :style="{backgroundImage: 'url(' + styleMap[styleId].back + ')'}">
     <div class="head">
         <el-tooltip content="我的" placement="bottom" effect="light">
-            <el-button @click="goMyPage" type="text" style="font-size: 32px; color: #8c939d"><i class="el-icon-user-solid"></i></el-button>
+            <el-button @click="goMyPage" type="text" :style="{color: styleMap[styleId].color, fontSize: '32px'}"><i class="el-icon-user-solid"></i></el-button>
         </el-tooltip>
         <el-tooltip content="做题去" placement="bottom" effect="light">
-            <el-button @click="goLeetcode" type="text" style="font-size: 32px; color: #8c939d"><i class="el-icon-s-promotion"></i></el-button>
+            <el-button @click="goLeetcode" type="text" :style="{color: styleMap[styleId].color, fontSize: '32px'}"><i class="el-icon-s-promotion"></i></el-button>
         </el-tooltip>
     </div>
-    <div class="ranking-container">
+    <div class="ranking-container" :style="{color: styleMap[styleId].color}">
         <div style="margin-left: 15px">
             <div style="margin-right: 15px; display: inline-block">
                 <el-tooltip effect="light">
@@ -81,7 +96,7 @@
             <el-col :sm="12" :xs="24">
                 <div class="ranking-card">
                     <div class="ranking-title">小白屋</div>
-                    <div v-for="(item, index) in normalList" :key="index" class="ranking-item" :class="{my: item.slug === me.leetcode_slug}">
+                    <div v-for="(item, index) in normalList" :key="index" class="ranking-item" :class="{my: item.slug === me.leetcode_slug, zero: item.point===0}">
                         <el-row>
                             <el-col :span="6" style="text-align: center">
                                 <el-link type="primary" :href="'https://leetcode-cn.com/u/' + item.slug" target="_blank" :underline="false">
@@ -108,7 +123,7 @@
             <el-col :sm="12" :xs="24">
                 <div class="ranking-card">
                     <div class="ranking-title">小黑屋</div>
-                    <div v-for="(item, index) in abnormalList" :key="index" class="ranking-item">
+                    <div v-for="(item, index) in abnormalList" :key="index" class="ranking-item" :class="{my: item.slug === me.leetcode_slug, zero: item.point===0}">
                         <el-row>
                             <el-col :span="6">
                                 <el-link type="primary" :href="'https://leetcode-cn.com/u/' + item.slug" target="_blank" :underline="false">
@@ -144,7 +159,22 @@
             return {
                 normalList: [],
                 abnormalList: [],
-                me: {}
+                me: {},
+                styleId: 0,
+                styleMap: [
+                    {
+                        back: 'https://ytlmike-public.oss-cn-beijing.aliyuncs.com/img/v2-bfd3b174b23eff467c49c0898d8e630a_r.jpg',
+                        color: '#fff'
+                    },
+                    {
+                        back: 'https://ytlmike-public.oss-cn-beijing.aliyuncs.com/img/b824da6d67411715b21dad17bebfbdc8_r.jpg',
+                        color: '#606266'
+                    },
+                    {
+                        back: 'https://ytlmike-public.oss-cn-beijing.aliyuncs.com/img/b824da6d67411715b21dad17bebfbdc8_r.jpg',
+                        color: '#606266'
+                    },
+                ]
             }
         },
         methods: {
@@ -222,11 +252,23 @@
                     .catch(function (error) {
                         console.log(error);
                     });
+            },
+            toggleBackground() {
+                let self = this;
+                setTimeout(_ => {
+                    let next = self.styleId + 1;
+                    if (self.styleMap.length <= next) {
+                        next = 0;
+                    }
+                    self.styleId = next;
+                    self.toggleBackground();
+                }, 30000)
             }
         },
         created() {
             this.getList();
             this.getMe();
+            this.toggleBackground();
         }
     })
 </script>

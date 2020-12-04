@@ -99,7 +99,7 @@
                     <div style="text-align: center">
                         <el-upload
                             class="avatar-uploader"
-                            action="avatar/upload"
+                            action="/api/avatar/upload"
                             :show-file-list="false"
                             :on-success="handleAvatarSuccess"
                             :before-upload="beforeAvatarUpload">

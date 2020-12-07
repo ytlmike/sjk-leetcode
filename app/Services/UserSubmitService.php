@@ -47,6 +47,5 @@ class UserSubmitService
         }
 
         UserSubmit::saveAll($insert);
-        (new UserPointService())->calcUserPoint($user);
     }
 }

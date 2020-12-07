@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\UserPointService;
 use App\Services\UserSubmitService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,6 +27,7 @@ class AuthController extends Controller
         $user->save();
 
         (new UserSubmitService())->syncUserRecentSubmissions($user);
+        (new UserPointService())->calcUserPoint($user);
 
         return $this->login($request);
     }

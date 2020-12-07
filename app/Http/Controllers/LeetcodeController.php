@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\LeetcodeQuestion;
 use App\Models\User;
 use App\Models\UserSubmit;
+use App\Services\UserPointService;
 use App\Services\UserSubmitService;
 use App\Utils\Leetcode;
 use GuzzleHttp\Client;
@@ -113,6 +114,7 @@ class LeetcodeController extends Controller
         }
         Redis::expire($key, self::SYNC_LOCK_EXPIRE);
         $submitService->syncUserRecentSubmissions($user);
+        (new UserPointService())->calcUserPoint($user);
 
         return $this->success();
     }

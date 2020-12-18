@@ -24,7 +24,7 @@ class JudgeUser extends Command
     public function handle()
     {
         User::with(['points' => function ($query) {
-            $query->where(UserPoint::FIELD_FROM, Carbon::now()->subDays(date('w') - 1)->subWeek()->format('Y-m-d'));
+            $query->where(UserPoint::FIELD_FROM, Carbon::now()->subDays((date('w') == 0 ? 7 : date('w')) - 1)->subWeek()->format('Y-m-d'));
         }])->get()->each(function (User $user) {
             $currentStatus = $user->getStatus();
             /** @var UserPoint $thisWeekPoint */

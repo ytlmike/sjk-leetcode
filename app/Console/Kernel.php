@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command((new SyncLeetcodeData())->getName())->daily();
         $schedule->command((new SyncUserQuestion())->getName())->daily();
-        $schedule->command((new JudgeUser())->getName())->weekly();
+        $schedule->command((new JudgeUser())->getName())->weeklyOn('1');
     }
 
     /**

@@ -19,9 +19,9 @@ class UserPointService
 
     public function calcUserPoint(User $user)
     {
-        $thisMonday = Carbon::now()->subDays(date('w') - 1)->format('Y-m-d');
-        $thisSunday = Carbon::now()->addDays(7 - date('w'))->format('Y-m-d');
-        $nextMonday = Carbon::now()->subDays(date('w') - 1)->addWeek()->format('Y-m-d');
+        $thisMonday = Carbon::now()->subDays((date('w') == 0 ? 7 : date('w')) - 1)->format('Y-m-d');
+        $thisSunday = Carbon::now()->addDays(7 - (date('w') == 0 ? 7 : date('w')))->format('Y-m-d');
+        $nextMonday = Carbon::now()->subDays((date('w') == 0 ? 7 : date('w')) - 1)->addWeek()->format('Y-m-d');
 
         $correctSubmissions = UserSubmit::getCorrectSubmissionInDuration($user->getKey(), $thisMonday, $nextMonday);
         $questionIds = [];

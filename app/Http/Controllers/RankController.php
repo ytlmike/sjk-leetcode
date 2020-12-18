@@ -14,7 +14,7 @@ class RankController extends Controller
     public function normal()
     {
         $users = User::with(['points' => function ($query) {
-            $query->where(UserPoint::FIELD_FROM, Carbon::now()->subDays(date('w') - 1)->format('Y-m-d'));
+            $query->where(UserPoint::FIELD_FROM, Carbon::now()->subDays((date('w') == 0 ? 7 : date('w')) - 1)->format('Y-m-d'));
         }])->where(User::FIELD_STATUS, User::STATUS_NORMAL)
             ->get();
 
@@ -24,7 +24,7 @@ class RankController extends Controller
     public function abnormal()
     {
         $users = User::with(['points' => function ($query) {
-            $query->where(UserPoint::FIELD_FROM, Carbon::now()->subDays(date('w') - 1)->format('Y-m-d'));
+            $query->where(UserPoint::FIELD_FROM, Carbon::now()->subDays((date('w') == 0 ? 7 : date('w')) - 1)->format('Y-m-d'));
         }])->where(User::FIELD_STATUS, User::STATUS_BLACK)
             ->get();
 

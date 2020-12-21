@@ -136,7 +136,7 @@
                                     style="line-height: 56px"
                                     :stroke-width="26"
                                     :text-inside="true"
-                                    :percentage="(item.point / 5 * 100) > 100 ? 100 : (item.point / 5 * 100)"
+                                    :percentage="(item.point / 10 * 100) > 100 ? 100 : (item.point / 10 * 100)"
                                     :format="format(item)"
                                     :status="getStatus(item, 10)"
                                 ></el-progress>

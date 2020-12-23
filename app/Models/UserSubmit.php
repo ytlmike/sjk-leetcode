@@ -33,6 +33,7 @@ class UserSubmit extends BaseModel
         'A_19'  => 'PHP',
         'A_8'   => 'Bash',
         'A_11'  => 'Python3',
+        'A_10'  => 'Go',
         'A_6'   => 'JavaScript',
         'A_3'   => 'MySQL',
         'A_1'   => 'Java',

@@ -24,6 +24,7 @@ class AuthController extends Controller
         $user->setPassword($input['password']);
         $user->setName($input['name']);
         $user->setAvatar($input['avatar']);
+        $user->setStatus(1);
         $user->save();
 
         (new UserSubmitService())->syncUserRecentSubmissions($user);

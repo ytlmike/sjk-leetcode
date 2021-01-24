@@ -4,18 +4,16 @@ name: leetcoder
 
 steps:
   - name: build
-    image: alpine
+    image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/drone-runner-with-docker:7.3
     volumes:
       - name: cache
-        path: /cache
+        path: /data/composer
     commands:
-      - whoami
+      - echo $MYSQL_HOST
+      - composer install --no-dev --optimize-autoloader
 
   - name: deploy
     image: alpine
-    volumes:
-      - name: cache
-        path: /cache
     commands:
       - ls -al
       - docker ps
@@ -23,4 +21,9 @@ steps:
 
 volumes:
   - name: cache
-    temp: {}
+    host:
+      path: /data/composer
+
+trigger:
+  branch:
+    - master

@@ -5,11 +5,10 @@ name: leetcoder
 steps:
   - name: build
     image: alpine
-    volumes:
-      - name: cache
-        path: /cache
+#    volumes:
+#      - name: cache
+#        path: /cache
     commands:
-      - echo -------------- building --------------
       - mkdir cache
       - touch cache/a
       - echo '123123' >> cache/a
@@ -17,13 +16,13 @@ steps:
 
   - name: deploy
     image: alpine
-    volumes:
-      - name: cache
-        path: /cache
+#    volumes:
+#      - name: cache
+#        path: /cache
     commands:
-      - echo -------------- deploying --------------
       - ls -al
       - cat cache/a
+      - docker ps
 
 volumes:
   - name: cache

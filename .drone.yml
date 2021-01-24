@@ -18,7 +18,6 @@ steps:
         path: /cache
     commands:
       - ls -al
-      - cat cache/a
       - docker ps
 
 volumes:

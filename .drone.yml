@@ -8,7 +8,7 @@ steps:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
     environment:
-      MYSQL_HOST=${MYSQL_HOST}
+      MYSQL_HOST="${MYSQL_HOST}"
 
   - name: deploy
     commands:

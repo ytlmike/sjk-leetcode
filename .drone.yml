@@ -4,7 +4,7 @@ name: leetcoder
 
 steps:
   - name: build
-    image: ytlmike/php-composer:7.3
+    image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/php-composer-docker:7.3
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader

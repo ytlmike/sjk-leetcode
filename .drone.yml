@@ -15,7 +15,6 @@ steps:
     image: alpine
     commands:
       - ls -al
-      - docker ps
 
 
 #volumes:

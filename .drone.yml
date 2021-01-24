@@ -25,7 +25,6 @@ steps:
       - ls -al
       - cat cache/a
 
-
 volumes:
   - name: cache
     temp: {}

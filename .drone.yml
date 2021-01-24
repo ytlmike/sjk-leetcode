@@ -4,7 +4,7 @@ name: leetcoder
 
 steps:
   - name: build
-    image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/drone-runner-with-docker:7.3
+    image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/php-composer:7.3
 #    volumes:
 #      - name: cache
 #        path: /data/composer

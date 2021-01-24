@@ -5,9 +5,9 @@ name: leetcoder
 steps:
   - name: build
     image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/drone-runner-with-docker:7.3
-    volumes:
-      - name: cache
-        path: /data/composer
+#    volumes:
+#      - name: cache
+#        path: /data/composer
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
@@ -19,10 +19,10 @@ steps:
       - docker ps
 
 
-volumes:
-  - name: cache
-    host:
-      path: /data/composer
+#volumes:
+#  - name: cache
+#    host:
+#      path: /data/composer
 
 trigger:
   branch:

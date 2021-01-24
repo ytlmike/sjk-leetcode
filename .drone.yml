@@ -1,0 +1,31 @@
+kind: pipeline
+type: docker
+name: leetcoder
+
+steps:
+  - name: build
+    image: alpine
+    volumes:
+      - name: cache
+        path: /cache
+    commands:
+      - echo -------------- building --------------
+      - mkdir cache
+      - touch cache/a
+      - echo '123123' >> cache/a
+      - ls -al
+
+  - name: deploy
+    image: alpine
+    volumes:
+      - name: cache
+        path: /cache
+    commands:
+      - echo -------------- deploying --------------
+      - ls -al
+      - cat cache/a
+
+
+volumes:
+  - name: cache
+    temp: {}

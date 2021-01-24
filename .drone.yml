@@ -4,11 +4,11 @@ name: leetcoder
 
 steps:
   - name: build
-    environment:
-      MYSQL_HOST=${MYSQL_HOST}
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
+    environment:
+      MYSQL_HOST=${MYSQL_HOST}
 
   - name: deploy
     commands:

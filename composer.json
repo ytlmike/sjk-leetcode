@@ -60,10 +60,6 @@
         ]
     },
     "repositories": {
-        "sjk": {
-            "type": "composer",
-            "url": "http://repo.devutil.sanjieke.cn/"
-        },
         "packagist": {
             "type": "composer",
             "url": "https://mirrors.aliyun.com/composer/"

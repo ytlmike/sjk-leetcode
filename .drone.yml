@@ -2,13 +2,15 @@ kind: pipeline
 type: docker
 name: leetcoder
 
+environment:
+  GOOS: linux
+  GOARCH: amd64
+
 steps:
   - name: build
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
-    environment:
-      MYSQL_HOST="${MYSQL_HOST}"
 
   - name: deploy
     commands:

@@ -7,9 +7,6 @@ steps:
     image: ytlmike/php-composer:7.3
     environment:
       - MYSQL_HOST=$MYSQL_HOST
-#    volumes:
-#      - name: cache
-#        path: /data/composer
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader

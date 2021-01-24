@@ -9,7 +9,12 @@ steps:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
     environment:
-      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_HOST:
+        from_secret: MYSQL_HOST
+      MYSQL_USERNAME:
+        from_secret: MYSQL_USERNAME
+      MYSQL_PASSWORD:
+          from_secret: MYSQL_PASSWORD
 
   - name: deploy
     image: alpine

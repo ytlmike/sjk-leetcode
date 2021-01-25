@@ -21,6 +21,8 @@ steps:
       - echo $DB_PORT
       - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
       - cp deploy/* ./
+      - chown -R www-data build
+      - chgrp -R www-data build
       - ls -al
       - cat server.conf
       - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .

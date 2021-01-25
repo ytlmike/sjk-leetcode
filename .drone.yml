@@ -21,8 +21,9 @@ steps:
       - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
       - cp deploy/* ./
       - ls -al
-      - docker build -t leetcoder .
+      - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .
       - docker login --username=$ALI_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $ALI_PASSWORD
+      - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder
     environment:
       MYSQL_HOST:
         from_secret: MYSQL_HOST
@@ -36,9 +37,12 @@ steps:
         from_secret: ALI_PASSWORD
 
   - name: deploy
-    image: alpine
+    image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/docker-compose
+    volumes:
+      - name: docker
+        path: /var/run/docker.sock
     commands:
-      - ls -al
+      - docker-compose up -d
 
 
 volumes:

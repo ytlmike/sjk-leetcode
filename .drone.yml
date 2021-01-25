@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: leetcoder
+name: leetcoder-build
 
 steps:
   - name: build
@@ -17,6 +17,9 @@ steps:
       - mkdir build
       - cp .env.example .env
       - echo "MYSQL_HOST=$MYSQL_HOST" >> .env
+      - echo "MYSQL_USERNAME=MYSQL_USERNAME" >> .env
+      - echo "MYSQL_PASSWORD=MYSQL_PASSWORD" >> .env
+      - echo "REDIS_HOST=REDIS_HOST" >> .env
       - cat .env
       - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
       - cp deploy/* ./
@@ -25,6 +28,8 @@ steps:
       - docker login --username=$ALI_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $ALI_PASSWORD
       - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder
     environment:
+      REDIS_HOST:
+        from_secret: REDIS_HOST
       MYSQL_HOST:
         from_secret: MYSQL_HOST
       MYSQL_USERNAME:
@@ -35,7 +40,27 @@ steps:
         from_secret: ALI_USERNAME
       ALI_PASSWORD:
         from_secret: ALI_PASSWORD
+node:
+  type: builder
 
+volumes:
+  - name: cache
+    host:
+      path: /data/composer/
+  - name: docker
+    host:
+      path: /var/run/docker.sock
+
+trigger:
+  branch:
+    - master
+
+---
+kind: pipeline
+type: docker
+name: leetcoder-deploy
+
+steps:
   - name: deploy
     image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/docker-compose
     volumes:
@@ -44,11 +69,7 @@ steps:
     commands:
       - docker-compose up -d
 
-
 volumes:
-  - name: cache
-    host:
-      path: /data/composer/
   - name: docker
     host:
       path: /var/run/docker.sock

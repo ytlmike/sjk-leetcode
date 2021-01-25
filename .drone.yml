@@ -22,7 +22,7 @@ steps:
       - cp deploy/* ./
       - ls -al
       - docker build -t leetcoder .
-      - docker login --username=${ALI_USERNAME} registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p ${ALI_PASSWORD}
+      - docker login --username=$ALI_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $ALI_PASSWORD
     environment:
       MYSQL_HOST:
         from_secret: MYSQL_HOST

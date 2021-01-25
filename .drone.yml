@@ -19,7 +19,7 @@ steps:
       - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
       - cp deploy/* ./
       - ls -al
-#      - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .
+      - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .
 #      - docker login --username=$ALI_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $ALI_PASSWORD
 #      - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder
 #node:

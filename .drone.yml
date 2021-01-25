@@ -8,8 +8,6 @@ steps:
     volumes:
       - name: cache
         path: /data/composer/
-      - name: docker
-        path: /var/run/docker.sock
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
@@ -28,19 +26,6 @@ steps:
 #      - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .
 #      - docker login --username=$ALI_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $ALI_PASSWORD
 #      - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder
-    environment:
-      REDIS_HOST:
-        from_secret: REDIS_HOST
-      MYSQL_HOST:
-        from_secret: MYSQL_HOST
-      MYSQL_USERNAME:
-        from_secret: MYSQL_USERNAME
-      MYSQL_PASSWORD:
-        from_secret: MYSQL_PASSWORD
-      ALI_USERNAME:
-        from_secret: ALI_USERNAME
-      ALI_PASSWORD:
-        from_secret: ALI_PASSWORD
 #node:
 #  type: builder
 
@@ -48,9 +33,6 @@ volumes:
   - name: cache
     host:
       path: /data/composer/
-  - name: docker
-    host:
-      path: /var/run/docker.sock
 
 trigger:
   branch:
@@ -64,17 +46,10 @@ name: leetcoder-deploy
 steps:
   - name: deploy
     image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/docker-compose
-    volumes:
-      - name: docker
-        path: /var/run/docker.sock
     commands:
       - ls
+      - docker ps
 #      - docker-compose up -d
-
-volumes:
-  - name: docker
-    host:
-      path: /var/run/docker.sock
 
 trigger:
   branch:

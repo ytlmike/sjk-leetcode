@@ -67,7 +67,8 @@ steps:
       - name: docker
         path: /var/run/docker.sock
     commands:
-      - docker-compose up -d
+      - ls
+#      - docker-compose up -d
 
 volumes:
   - name: docker

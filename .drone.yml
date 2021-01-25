@@ -7,11 +7,9 @@ steps:
     image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/php-composer-docker:7.3
     volumes:
       - name: cache
-        host:
-          path: /data/composer
+        path: /data/composer/
       - name: docker
-        host:
-          path: /var/run/docker.sock
+        path: /var/run/docker.sock
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
@@ -42,7 +40,7 @@ steps:
 volumes:
   - name: cache
     host:
-      path: /data/composer
+      path: /data/composer/
   - name: docker
     host:
       path: /var/run/docker.sock

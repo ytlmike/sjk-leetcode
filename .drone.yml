@@ -21,13 +21,14 @@ steps:
       - echo $DB_PORT
       - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
       - cp deploy/* ./
-      - chown -R www-data build
-      - chgrp -R www-data build
       - ls -al
       - cat server.conf
       - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .
       - docker login --username=$REPO_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $REPO_PASSWORD
       - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder
+    when:
+      instance:
+        - drone.ytlmike.com
 
   - name: deploy
     image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/docker-compose

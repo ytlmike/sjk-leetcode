@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: leetcoder-build
+name: leetcoder
 
 steps:
   - name: build
@@ -9,7 +9,11 @@ steps:
       - name: cache
         path: /data/composer/
     commands:
-      - echo $MYSQL_HOST
+      - sed -i "s/DB_HOST=.*/DB_HOST=$MYSQL_HOST/g" .env
+      - sed -i "s/DB_PORT=.*/DB_HOST=$MYSQL_PORT/g" .env
+      - sed -i "s/DB_USERNAME=.*/DB_HOST=$MYSQL_USERNAME/g" .env
+      - sed -i "s/DB_PASSWORD=.*/DB_HOST=$MYSQL_PASSWORD/g" .env
+      - sed -i "s/REDIS_HOST=.*/DB_HOST=$REDIS_HOST/g" .env
       - composer install --no-dev --optimize-autoloader
       - rm -rf build
       - mkdir build
@@ -20,33 +24,23 @@ steps:
       - cp deploy/* ./
       - ls -al
       - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .
-#      - docker login --username=$ALI_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $ALI_PASSWORD
-#      - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder
-#node:
-#  type: builder
+      - docker login --username=$REPO_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $REPO_PASSWORD
+      - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder
+
+  - name: deploy
+    image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/docker-compose
+    commands:
+      - cd deploy
+      - docker-compose up -d
+    when:
+      status:
+        - success
 
 volumes:
   - name: cache
     host:
       path: /data/composer/
 
-#trigger:
-#  branch:
-#    - master
-
----
-kind: pipeline
-type: docker
-name: leetcoder-deploy
-
-steps:
-  - name: deploy
-    image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/docker-compose
-    commands:
-      - ls
-      - docker ps
-#      - docker-compose up -d
-
-#trigger:
-#  branch:
-#    - master
+trigger:
+  branch:
+    - master

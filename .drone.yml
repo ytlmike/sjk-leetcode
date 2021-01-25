@@ -40,8 +40,8 @@ steps:
         from_secret: ALI_USERNAME
       ALI_PASSWORD:
         from_secret: ALI_PASSWORD
-node:
-  type: builder
+#node:
+#  type: builder
 
 volumes:
   - name: cache

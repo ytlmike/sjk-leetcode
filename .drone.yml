@@ -5,9 +5,26 @@ name: leetcoder
 steps:
   - name: build
     image: registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/php-composer-docker:7.3
+    volumes:
+      - name: cache
+        host:
+          path: /data/composer
+      - name: docker
+        host:
+          path: /var/run/docker.sock
     commands:
       - echo $MYSQL_HOST
       - composer install --no-dev --optimize-autoloader
+      - rm -rf build
+      - mkdir build
+      - cp .env.example .env
+      - echo "MYSQL_HOST=${MYSQL_HOST}" >> .env
+      - cat .env
+      - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
+      - cp deploy/* ./
+      - ls -al
+      - docker build -t leetcoder .
+      - docker login --username=$ registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p aa921103
     environment:
       MYSQL_HOST:
         from_secret: MYSQL_HOST
@@ -22,10 +39,13 @@ steps:
       - ls -al
 
 
-#volumes:
-#  - name: cache
-#    host:
-#      path: /data/composer
+volumes:
+  - name: cache
+    host:
+      path: /data/composer
+  - name: docker
+    host:
+      path: /var/run/docker.sock
 
 trigger:
   branch:

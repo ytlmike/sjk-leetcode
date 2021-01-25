@@ -16,7 +16,7 @@ steps:
       - rm -rf build
       - mkdir build
       - cp .env.example .env
-      - echo "MYSQL_HOST=${MYSQL_HOST}" >> .env
+      - echo "MYSQL_HOST=$MYSQL_HOST" >> .env
       - cat .env
       - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
       - cp deploy/* ./

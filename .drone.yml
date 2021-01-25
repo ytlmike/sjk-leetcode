@@ -10,10 +10,10 @@ steps:
         path: /data/composer/
     commands:
       - cp .env.example .env
-      - sed -i "s/DB_HOST=.*/DB_HOST=$MYSQL_HOST/g" .env
-      - sed -i "s/DB_PORT=.*/DB_HOST=$MYSQL_PORT/g" .env
-      - sed -i "s/DB_USERNAME=.*/DB_HOST=$MYSQL_USERNAME/g" .env
-      - sed -i "s/DB_PASSWORD=.*/DB_HOST=$MYSQL_PASSWORD/g" .env
+      - sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/g" .env
+      - sed -i "s/DB_PORT=.*/DB_PORT=$DB_PORT/g" .env
+      - sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/g" .env
+      - sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/g" .env
       - sed -i "s/REDIS_HOST=.*/DB_HOST=$REDIS_HOST/g" .env
       - composer install --no-dev --optimize-autoloader
       - rm -rf build

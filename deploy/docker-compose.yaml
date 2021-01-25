@@ -6,6 +6,9 @@ services:
     restart: always
     networks:
       - traefik
+    volumes:
+      - /data/leetcoder/storage/logs/:/var/www/leetcoder/storage/logs/
+      - /data/leetcoder/public/avatar/:/var/www/leetcoder/public/avatar/
     labels:
       - "traefik.http.routers.leetcoder.rule=Host(`leetcoder.ytlmike.com`)"
       - "traefik.http.services.leetcoder.loadbalancer.server.port=80"

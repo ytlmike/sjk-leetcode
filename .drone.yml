@@ -30,9 +30,9 @@ volumes:
     host:
       path: /data/composer/
 
-trigger:
-  branch:
-    - master
+#trigger:
+#  branch:
+#    - master
 
 ---
 kind: pipeline
@@ -47,6 +47,6 @@ steps:
       - docker ps
 #      - docker-compose up -d
 
-trigger:
-  branch:
-    - master
+#trigger:
+#  branch:
+#    - master

@@ -65,8 +65,8 @@
         }
     </style>
 </head>
-<body>
-<div id="app" :style="{backgroundImage: 'url(' + styleMap[styleId].back + ')'}">
+<body id="app" :style="{backgroundImage: 'url(' + styleMap[styleId].back + ')'}">
+<div>
     <div class="head">
         <el-tooltip content="我的" placement="bottom" effect="light">
             <el-button @click="goMyPage" type="text" :style="{color: styleMap[styleId].color, fontSize: '32px'}"><i class="el-icon-user-solid"></i></el-button>

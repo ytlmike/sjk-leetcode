@@ -9,6 +9,7 @@ steps:
       - name: cache
         path: /data/composer/
     commands:
+      - echo $REDIS_HOST
       - cp .env.example .env
       - sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/g" .env
       - sed -i "s/DB_PORT=.*/DB_PORT=$DB_PORT/g" .env
@@ -22,7 +23,6 @@ steps:
       - cp -r app bootstrap config database resources public routes storage vendor deploy .env composer.json composer.lock build/
       - cp deploy/* ./
       - ls -al
-      - cat server.conf
       - docker build -t registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder .
       - docker login --username=$REPO_USERNAME registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder -p $REPO_PASSWORD
       - docker push registry-vpc.cn-qingdao.aliyuncs.com/ytlmike/leetcoder

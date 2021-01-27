@@ -52,7 +52,7 @@
             margin-right: 30px;
         }
 
-        ranking-card .el-link--inner {
+        .ranking-card .el-link--inner {
             font-size: 12px
         }
 
